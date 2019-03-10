@@ -1,0 +1,20 @@
+p {
+  line-height: .5rem;
+  font-size: .9rem;
+}
+
+#productHeader {
+  padding-bottom: 5px;
+}
+
+#thankYou {
+  text-align: center;
+  line-height: 1rem;
+  padding: 30px 0 20px 0;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+img {
+  margin: 0 auto;
+}

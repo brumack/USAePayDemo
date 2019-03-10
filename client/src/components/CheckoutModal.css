@@ -1,0 +1,20 @@
+@media only screen and (max-width: 767px) {
+  .ui.table th.fifteen.wide, 
+  .ui.table th.one.wide,
+  .ui.table:not(.unstackable) tr>td {
+    width: 50% !important;
+    display: inline-block !important;
+  }
+
+  thead tr, tfoot tr {
+    background-color: rgb(249, 250, 251)
+  }
+
+  .ui.form .field>label {
+    padding-top: 10px;
+  }
+
+  .ui[class*="right floated"].buttons {
+    margin-top: 10px;
+  }
+}
