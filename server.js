@@ -2,7 +2,7 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
 const path = require('path')
-const apiRoutes = require('./routes/apiRoutes')
+const apiRoutes = require('./Routes/apiRoutes')
 
 app.use('/api', apiRoutes)
 app.use(bodyParser.urlencoded({ extended: true }))
