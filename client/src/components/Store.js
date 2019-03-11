@@ -6,11 +6,20 @@ import local from '../apis/local'
 export default class Store extends React.Component {
 
   state = {
-    products: []
+    products: [],
+    live: null
   }
 
   componentDidMount() {
+    this.setState({ live: this.props.live })
     this.getProducts()
+  }
+
+  componentWillReceiveProps = newProps => {
+    const { live } = this.state
+    if (live !== newProps.live) {
+      this.setState({ live: newProps.live })
+    }
   }
 
   getProducts = async () => {
@@ -19,18 +28,15 @@ export default class Store extends React.Component {
   }
 
   renderProducts = () => {
-    return this.state.products.map(product => {
-      return <Product product={product} live={this.props.live} key={product.name} />
-    })
+    const { products, live } = this.state
+    return products.map(product => <Product product={product} live={live} key={product.name} />)
   }
 
   render() {
     return (
-      <div>
-        <Container>
-          {this.renderProducts()}
-        </Container>
-      </div>
+      <Container>
+        {this.renderProducts()}
+      </Container>
     )
   }
 }

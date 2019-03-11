@@ -19,7 +19,8 @@ export default class Checkout extends React.Component {
     avs_zip: '',
     amount: 0,
     message: null,
-    result: null
+    result: null,
+    live: null
   }
 
   maxFieldLength = {
@@ -31,7 +32,14 @@ export default class Checkout extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ amount: this.props.product.price })
+    this.setState({ amount: this.props.product.price, live: this.props.live })
+  }
+
+  componentWillReceiveProps = newProps => {
+    const { live } = this.state
+    if (live !== newProps.live) {
+      this.setState({ live: newProps.live })
+    }
   }
 
   handleOpen = () => this.setState({ modalOpen: true })
@@ -48,7 +56,7 @@ export default class Checkout extends React.Component {
         avs_street: '',
         avs_zip: '',
         message: null,
-        result: null
+        result: null,
       })
   }
 
@@ -75,26 +83,20 @@ export default class Checkout extends React.Component {
   isNumberField = field => ['number', 'expMonth', 'expYear', 'cvc', 'avs_zip'].indexOf(field) !== -1
 
   handleSubmit = async e => {
-    const emptyValues = Object.values(this.state).filter(value => (value != null && value.length < 1))
+    const paymentParams = Object.values(this.state)
+    const emptyPaymentParams = paymentParams.filter(value => (value != null && value.length < 1))
+    const hasEmptyPaymentParams = emptyPaymentParams.length !== 0
 
-    if (emptyValues.length === 0) {
-      let response
+    if (!hasEmptyPaymentParams) {
+      let response = await local.post(`/transaction`, this.state)
 
-      if (this.props.live) {
-        response = await local.post(`/liveTransaction`, this.state)
-        if (response.data.error) {
-          this.handleError(response.data.error)
-        } else {
-          this.setState({ result: response.data })
-        }
+      if (response.data.error || response.data.result === 'Error') {
+        this.handleError(response.data.error)
       } else {
-        response = await local.post(`/testTransaction`, this.state)
-        if (response.data.result === 'Error') {
-          this.handleError(response.data.error)
-        } else {
-          this.setState({ result: response.data })
-        }
+        this.setState({ result: response.data })
       }
+    } else {
+      this.handleError('Form fields cannot be empty.')
     }
   }
 
@@ -104,10 +106,10 @@ export default class Checkout extends React.Component {
   }
 
   displayError = () => {
-    if (this.state.message !== null) {
-      return <Message centered negative>{this.state.message}</Message>
-    }
+    const { message } = this.state
+    return message === null ? null : <Message negative>{message}</Message>
   }
+
 
   renderModalBody = () => {
     const { name, price, image } = this.props.product
@@ -133,17 +135,18 @@ export default class Checkout extends React.Component {
   }
 
   renderSteps = () => {
+    const { result } = this.state
     const steps = [
       {
         key: 'billing',
-        active: !this.state.result,
-        icon: this.state.result ? null : 'payment',
+        active: !result,
+        icon: result ? null : 'payment',
         title: 'Billing',
       },
       {
         key: 'confirmation',
-        active: this.state.result,
-        icon: this.state.result ? 'check circle' : null,
+        active: result,
+        icon: result ? 'check circle' : null,
         title: 'Confirmation',
       }
     ]
@@ -166,13 +169,9 @@ export default class Checkout extends React.Component {
 
         {this.renderSteps()}
 
-        <Modal.Content scrolling>
-          {this.renderModalBody()}
-        </Modal.Content>
+        <Modal.Content scrolling>{this.renderModalBody()}</Modal.Content>
 
-        <SlideMessage open={message !== null}>
-          {this.displayError()}
-        </SlideMessage>
+        <SlideMessage open={message !== null}>{this.displayError()}</SlideMessage>
 
       </Modal >
     )

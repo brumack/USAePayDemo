@@ -20,27 +20,11 @@ router.get('/products', (req, res) => {
   res.json(products)
 })
 
-router.post('/testTransaction', (req, res) => {
-  req.body.live = false
+router.post('/transaction', (req, res) => {
   usaEpayRequest(req.body, (err, data) => {
     if (err) {
-      console.log(err)
       res.send(err)
     } else {
-      console.log(data)
-      res.send(data)
-    }
-  })
-})
-
-router.post('/liveTransaction', (req, res) => {
-  req.body.live = true
-  usaEpayRequest(req.body, (err, data) => {
-    if (err) {
-      console.log(err)
-      res.send(error)
-    } else {
-      console.log(data)
       res.send(data)
     }
   })
