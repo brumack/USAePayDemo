@@ -8,7 +8,7 @@ import Store from './components/Store'
 class App extends React.Component {
 
   state = {
-    live: true
+    live: false
   }
 
   handleModeChange = () => {
