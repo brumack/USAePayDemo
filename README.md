@@ -31,8 +31,8 @@
 | 4000301411112224	| 0919	| review |
 | 4000301511112223	| 0919	| reject |
 
-Partial Authorization Cards
+#### Partial Authorization Cards
 | Card Number	| Expiration	| Authorized Amount |
-| ---| --- | --- |
+| --- | --- | --- |
 | 4000000011112275	| 0919	| 50% |
 | 4000000011112283	| 0919	| 75% |
